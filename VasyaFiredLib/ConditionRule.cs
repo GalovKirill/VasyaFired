@@ -1,6 +1,8 @@
+using System;
+
 namespace VasyaFiredLib
 {
-    public readonly struct ConditionRule
+    public readonly struct ConditionRule : IEquatable<ConditionRule>
     {
         public readonly StampId S;
         
@@ -21,6 +23,27 @@ namespace VasyaFiredLib
             T = t;
             R = r;
             P = p;
+        }
+
+        public bool Equals(ConditionRule other)
+        {
+            return S.Equals(other.S) &&
+                   I.Equals(other.I) &&
+                   J.Equals(other.J) &&
+                   K.Equals(other.K) &&
+                   T.Equals(other.T) &&
+                   R.Equals(other.R) &&
+                   P.Equals(other.P);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ConditionRule other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(S, I, J, K, T, R, P);
         }
     }
 }
