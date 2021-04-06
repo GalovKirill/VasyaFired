@@ -3,6 +3,6 @@
 	<s:String x:Key="/Default/Environment/Hierarchy/Build/BuildTool/DotNetCliExePath/@EntryValue">/snap/dotnet-sdk/current/dotnet</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=dd13fe76_002Dc0fc_002D4925_002Db452_002D31253bd1aaf8/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Test1" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
-    &lt;TestId&gt;NUnit3x::365A7FF5-21FA-4B21-B1FC-2FE45CC31733::net5.0::VasyaFiredLibTests.Tests.Test1&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::365A7FF5-21FA-4B21-B1FC-2FE45CC31733::net5.0::VasyaFiredLibTests.OrganizationBuilderTests.SameOrganizationIsEqual&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

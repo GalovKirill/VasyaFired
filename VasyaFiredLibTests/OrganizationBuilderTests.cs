@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using NUnit.Framework;
 using VasyaFiredLib;
 
@@ -9,7 +8,7 @@ namespace VasyaFiredLibTests
 
 
         [Test]
-        public void Test1()
+        public void SameOrganizationIsEqual()
         {
             var builder = new Organization.Builder();
 
@@ -21,6 +20,16 @@ namespace VasyaFiredLibTests
                 .AddRule(departmentIds[1], new UnconditionalRule(s1, s2, departmentIds[0]));
 
             Organization actual = builder.Build();
+
+            var expected = new Organization
+            {
+                Stamps = new StampId[] {0, 1, 2},
+                ConditionRules = new ConditionRule[] {new(0, 1, 2, 1, 1, 2, 1)},
+                UnconditionalRules = new UnconditionalRule[] {new(0, 1, 0)},
+                Departments = new Department[] {new(0, RuleType.Conditional), new(0, RuleType.Unconditional)}
+            };
+            
+            Assert.AreEqual(expected, actual);
         }
     }
 }

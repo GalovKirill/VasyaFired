@@ -29,5 +29,10 @@ namespace VasyaFiredLib
         {
             return HashCode.Combine(I, J, K);
         }
+
+        public override string ToString()
+        {
+            return $"[{I}, {J}, {K}]";
+        }
     }
 }

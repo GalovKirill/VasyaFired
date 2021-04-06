@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace VasyaFiredLib
 {
@@ -33,6 +34,27 @@ namespace VasyaFiredLib
             
             static bool PairEquals<T>((T first, T second) pair)
                 where T: IEquatable<T> => pair.first.Equals(pair.second);
+        }
+
+        public override string ToString()
+        {
+            StringBuilder builder = new();
+            Dictionary<string, IEnumerable<object>> objects = new()
+            {
+                [nameof(Stamps)] = Stamps.Cast<object>(),
+                [nameof(Departments)] = Departments.Cast<object>(),
+                [nameof(ConditionRules)] = ConditionRules.Cast<object>(),
+                [nameof(UnconditionalRules)] = UnconditionalRules.Cast<object>()
+            };
+            
+            foreach (var (name, obs) in objects)
+            {
+                builder.Append(name).Append(": ");
+                builder = obs.Aggregate(builder, (b, o) => b.Append(' ').Append(o));
+                builder.Append('\n');
+            }
+
+            return builder.ToString();
         }
     }
 }

@@ -27,5 +27,10 @@ namespace VasyaFiredLib
         {
             return HashCode.Combine(RuleId, (int) RuleType);
         }
+
+        public override string ToString()
+        {
+            return $"[{RuleId}, {(int) RuleType}]";
+        }
     }
 }

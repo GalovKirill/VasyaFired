@@ -11,6 +11,7 @@ namespace VasyaFiredLib
         public bool Equals(RuleId other) => Id == other.Id;
         public override bool Equals(object obj) => obj is RuleId other && Equals(other);
         public override int GetHashCode() => Id;
-        
+        public static implicit operator RuleId(int id) => new(id);
+        public override string ToString() => Id.ToString();
     }
 }

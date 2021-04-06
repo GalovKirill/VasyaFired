@@ -12,5 +12,6 @@ namespace VasyaFiredLib
         public override bool Equals(object obj) => obj is DepartmentId other && Equals(other);
         public override int GetHashCode() => Id;
         public static implicit operator DepartmentId(int id) => new(id);
+        public override string ToString() => Id.ToString();
     }
 }
