@@ -1,19 +1,22 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Sockets;
 
 namespace VasyaFiredLib
 {
     public class DismissalService
     {
-        public IEnumerable<IEnumerable<StampId>> GetStamps(Vasya vasya, DepartmentId q, Organization organization)
+        public GetStampsResult GetStamps(Vasya vasya, DepartmentId q, Organization organization)
         {
             HashSet<DepartmentId> visited = new();
             Stack<HashSet<StampId>> result = new();
-
+            result.Push(new HashSet<StampId>());
             
-            DepartmentId next = default, current = vasya.A;
+            DepartmentId next = vasya.A, current = default;
             do
             {
+                current = next;
                 visited.Add(current);
                 ref readonly Department department = ref organization.GetDepartment(current);
                 if (q.Equals(current))
@@ -26,20 +29,11 @@ namespace VasyaFiredLib
                 {
                     case RuleType.Conditional:
                     {
-                        ref readonly ConditionRule rule = ref organization.GetConditionRule(department.RuleId);
-                        if (currentStamps.Contains(rule.S))
-                        {
-                            currentStamps.Add(rule.I);
-                            currentStamps.Remove(rule.J);
-                            next = rule.K;
-                        }
-                        else
-                        {
-                            currentStamps.Add(rule.T);
-                            currentStamps.Remove(rule.R);
-                            next = rule.P;
-                        }
-
+                        ref readonly ConditionalRule rule = ref organization.GetConditionRule(department.RuleId);
+                        var (add, remove, goTo) = currentStamps.Contains(rule.S) ? (rule.I, rule.J, rule.K) : (rule.T, rule.R, rule.P);
+                        currentStamps.Add(add);
+                        currentStamps.Remove(remove);
+                        next = goTo;
                         break;
                     }
                     case RuleType.Unconditional:
@@ -54,12 +48,14 @@ namespace VasyaFiredLib
                 
                 
             } while (!current.Equals(vasya.Z));
-
             
-            
-            
-            
-            return result;
+            return new GetStampsResult
+            {
+                InfinityCycle = false,
+                NoVisit = false,
+                VisitCount = result.Count,
+                StampsSets = result.Select(set => set.ToArray()).ToArray()
+            };
         }
     }
 }

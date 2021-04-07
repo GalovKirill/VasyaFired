@@ -8,12 +8,12 @@ namespace VasyaFiredLib
     public partial class Organization
     {
         public StampId[] Stamps { get; init; }
-        public ConditionRule[] ConditionRules { get; init; }
+        public ConditionalRule[] ConditionRules { get; init; }
         public UnconditionalRule[] UnconditionalRules { get; init; }
         public Department[] Departments { get; init; }
 
         public ref readonly Department GetDepartment(DepartmentId id) => ref Departments[id.Id];
-        public ref readonly ConditionRule GetConditionRule(RuleId id) => ref ConditionRules[id.Id];
+        public ref readonly ConditionalRule GetConditionRule(RuleId id) => ref ConditionRules[id.Id];
         public ref readonly UnconditionalRule GetUnconditionalRule(RuleId id) => ref UnconditionalRules[id.Id];
 
         public override bool Equals(object? obj) => obj is Organization other && Equals(other);

@@ -9,7 +9,7 @@ namespace VasyaFiredLib
         {
             private const int InitCapacity = 126;
             private readonly List<StampId> _stamps = new(InitCapacity);
-            private readonly List<ConditionRule> _conditionRules = new (InitCapacity);
+            private readonly List<ConditionalRule> _conditionRules = new (InitCapacity);
             private readonly List<UnconditionalRule> _unconditionalRules = new (InitCapacity);
             private readonly List<Department> _departments = new(InitCapacity);
 
@@ -25,7 +25,7 @@ namespace VasyaFiredLib
                 return this;
             }
 
-            public Builder AddRule(DepartmentId departmentId, ConditionRule rule)
+            public Builder AddRule(DepartmentId departmentId, ConditionalRule rule)
             {
                 RuleId ruleId = new RuleId(_conditionRules.Count);
                 _conditionRules.Add(rule);
@@ -58,26 +58,6 @@ namespace VasyaFiredLib
             {
                 stampId = new StampId(_stamps.Count);
                 _stamps.Add(stampId);
-                return this;
-            }
-
-            public Builder AddDepartment(ConditionRule rule, out DepartmentId departmentId)
-            {
-                RuleId ruleId = new(_conditionRules.Count);
-                _conditionRules.Add(rule);
-                Department department = new (ruleId, RuleType.Conditional);
-                departmentId = new (_departments.Count);
-                _departments.Add(department);
-                return this;
-            }
-            
-            public Builder AddDepartment(UnconditionalRule rule, out DepartmentId departmentId)
-            {
-                RuleId ruleId = new(_unconditionalRules.Count);
-                _unconditionalRules.Add(rule);
-                Department department = new(ruleId, RuleType.Unconditional);
-                departmentId = new(_departments.Count);
-                _departments.Add(department);
                 return this;
             }
 

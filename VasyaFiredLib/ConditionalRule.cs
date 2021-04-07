@@ -2,7 +2,7 @@ using System;
 
 namespace VasyaFiredLib
 {
-    public readonly struct ConditionRule : IEquatable<ConditionRule>
+    public readonly struct ConditionalRule : IEquatable<ConditionalRule>
     {
         public readonly StampId S;
         
@@ -14,7 +14,7 @@ namespace VasyaFiredLib
         public readonly StampId R;
         public readonly DepartmentId P;
 
-        public ConditionRule(StampId s, StampId i, StampId j, DepartmentId k, StampId t, StampId r, DepartmentId p)
+        public ConditionalRule(StampId s, StampId i, StampId j, DepartmentId k, StampId t, StampId r, DepartmentId p)
         {
             S = s;
             I = i;
@@ -25,7 +25,7 @@ namespace VasyaFiredLib
             P = p;
         }
 
-        public bool Equals(ConditionRule other)
+        public bool Equals(ConditionalRule other)
         {
             return S.Equals(other.S) &&
                    I.Equals(other.I) &&
@@ -38,7 +38,7 @@ namespace VasyaFiredLib
 
         public override bool Equals(object obj)
         {
-            return obj is ConditionRule other && Equals(other);
+            return obj is ConditionalRule other && Equals(other);
         }
 
         public override int GetHashCode()
