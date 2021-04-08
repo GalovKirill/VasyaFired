@@ -13,16 +13,22 @@ namespace VasyaFiredLib
             Stack<HashSet<StampId>> result = new();
             result.Push(new HashSet<StampId>());
             
-            DepartmentId next = vasya.A, current = default;
+            DepartmentId next = vasya.A, 
+                current = DepartmentId.Null, 
+                previous = DepartmentId.Null;
             do
             {
+                previous = current;
                 current = next;
-                visited.Add(current);
-                ref readonly Department department = ref organization.GetDepartment(current);
-                if (q.Equals(current))
+                next = DepartmentId.Null;
+                
+                if (q.Equals(previous))
                 {
                     result.Push(new HashSet<StampId>(result.Peek()));
                 }
+                
+                ref readonly Department department = ref organization.GetDepartment(current);
+                
 
                 HashSet<StampId> currentStamps = result.Peek();
                 switch (department.RuleType)
@@ -44,9 +50,9 @@ namespace VasyaFiredLib
                         next = rule.K;
                         break;
                     }
-                }        
-                
-                
+                }
+
+                visited.Add(current);
             } while (!current.Equals(vasya.Z));
             
             return new GetStampsResult
@@ -54,7 +60,7 @@ namespace VasyaFiredLib
                 InfinityCycle = false,
                 NoVisit = false,
                 VisitCount = result.Count,
-                StampsSets = result.Select(set => set.ToArray()).ToArray()
+                StampsSets = result.Reverse().Select(set => set.ToArray()).ToArray()
             };
         }
     }

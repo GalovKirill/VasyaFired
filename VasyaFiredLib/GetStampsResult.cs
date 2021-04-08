@@ -44,8 +44,7 @@ namespace VasyaFiredLib
                 {
                     builder.Append(stampId).Append(',');
                 }
-                builder.Append(']');
-                builder.Append('\n');
+                builder.Remove(builder.Length - 1, 1).Append(']').Append('\n');
             }
 
             return builder.ToString();
@@ -58,9 +57,11 @@ namespace VasyaFiredLib
             for (int i = 0; i < stampsSets.Length; i++)
             {
                 var set = stampsSets[i].ToHashSet();
-                var otherSet = otherStampsSets[i];
-                set.ExceptWith(otherSet);
-                if (set.Count != 0)
+                var otherSet = otherStampsSets[i].ToHashSet();
+                // set.ExceptWith(otherSet);
+                // otherSet.ExceptWith(set);
+                set.SymmetricExceptWith(otherSet);
+                if (set.Count != 0 )
                     return false;
             }
             return true;

@@ -4,6 +4,8 @@ namespace VasyaFiredLib
 {
     public readonly struct DepartmentId : IEquatable<DepartmentId>
     {
+
+        public static readonly DepartmentId Null = new DepartmentId(-1);
         public readonly int Id;
 
         public DepartmentId(int id) => Id = id;

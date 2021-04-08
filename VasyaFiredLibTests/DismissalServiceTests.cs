@@ -1,36 +1,43 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using VasyaFiredLib;
 
 namespace VasyaFiredLibTests
 {
+    [TestFixture]
     public class DismissalServiceTests
     {
-        [Test]
-        public void Case1()
+
+        [TestCaseSource(typeof(GetStampsTestCases), nameof(GetStampsTestCases.TestCases))]
+        [Timeout(5_000)]
+        
+        public void GetStampsTest(DismissalService service,
+            Vasya vasya,
+            DepartmentId q,
+            Organization organization,
+            GetStampsResult expected)
         {
-            Organization.Builder builder = new Organization.Builder()
-                .AddStamps(4, out var ss)
-                .AddDepartments(4, out var ds)
-                .AddUnconditionalRule(ds[0], ss[0], ss[3], ds[1])
-                .AddUnconditionalRule(ds[1], ss[1], ss[3], ds[2])
-                .AddUnconditionalRule(ds[2], ss[2], ss[3], ds[3])
-                .AddUnconditionalRule(ds[3], ss[3], ss[0], ds[1]);
-
-            var v = new Vasya {A = ds[0], Z = ds[3]};
-            DismissalService dismissalService = new();
-
-            GetStampsResult expected = new GetStampsResult
-            {
-                InfinityCycle = false, NoVisit = false, VisitCount = 1,
-                StampsSets = new[]
-                {
-                    new StampId[] {new(1), new(2), new(3)}
-                }
-            };
-
-            GetStampsResult actual = dismissalService.GetStamps(v, ds[3], builder.Build());
-            
+            GetStampsResult actual = service.GetStamps(vasya, q, organization);
             Assert.AreEqual(expected, actual);
+        }
+        
+        [TestCaseSource(typeof(GetStampsTestCases), nameof(GetStampsTestCases.TestCasesParallel))]
+        [Timeout(5_000)]
+        public void GetStampsFromDifferentThreadsTest(DismissalService service,
+            Vasya vasya,
+            DepartmentId q,
+            Organization organization,
+            GetStampsResult expected)
+        {
+            ParallelLoopResult loopResult = Parallel.For(0, 16, _ =>
+            {
+                GetStampsResult actual = service.GetStamps(vasya, q, organization);
+                Assert.AreEqual(expected, actual);
+            });
+
+            // while (!loopResult.IsCompleted) { }
         }
     }
 }
