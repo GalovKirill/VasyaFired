@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
 
 namespace VasyaFiredLib
 {
@@ -9,59 +8,78 @@ namespace VasyaFiredLib
     {
         public GetStampsResult GetStamps(Vasya vasya, DepartmentId q, Organization organization)
         {
-            HashSet<DepartmentId> visited = new();
-            Stack<HashSet<StampId>> result = new();
-            result.Push(new HashSet<StampId>());
+            Stack<StampsCollection> result = new();
+            IInfinityCycleChecker infinityCycleChecker = new InfinityCycleChecker();
             
-            DepartmentId next = vasya.A, 
-                current = DepartmentId.Null, 
-                previous = DepartmentId.Null;
+            var infinityCycle = false;
+            var noVisit = true;
+            
+            DepartmentId next = vasya.A;
+            DepartmentId current;
+            
+            result.Push(new StampsCollection());
             do
             {
-                previous = current;
                 current = next;
-                next = DepartmentId.Null;
-                
-                if (q.Equals(previous))
-                {
-                    result.Push(new HashSet<StampId>(result.Peek()));
-                }
-                
                 ref readonly Department department = ref organization.GetDepartment(current);
-                
-
-                HashSet<StampId> currentStamps = result.Peek();
-                switch (department.RuleType)
+                StampsCollection currentStamps = result.Peek();
+                next = ProcessDepartment(department, organization, currentStamps);
+                infinityCycleChecker.AddToVisited(current);
+                infinityCycle = infinityCycleChecker.IsInInfinityCycle(currentStamps, next, current);
+                if (infinityCycle)
+                    break;
+                if (q == current)
                 {
-                    case RuleType.Conditional:
-                    {
-                        ref readonly ConditionalRule rule = ref organization.GetConditionRule(department.RuleId);
-                        var (add, remove, goTo) = currentStamps.Contains(rule.S) ? (rule.I, rule.J, rule.K) : (rule.T, rule.R, rule.P);
-                        currentStamps.Add(add);
-                        currentStamps.Remove(remove);
-                        next = goTo;
-                        break;
-                    }
-                    case RuleType.Unconditional:
-                    {
-                        ref readonly UnconditionalRule rule = ref organization.GetUnconditionalRule(department.RuleId);
-                        currentStamps.Add(rule.I);
-                        currentStamps.Remove(rule.J);
-                        next = rule.K;
-                        break;
-                    }
+                    noVisit = false;
+                    result.Push(new StampsCollection(result.Peek()));
                 }
+                
+            } while (current != vasya.Z);
 
-                visited.Add(current);
-            } while (!current.Equals(vasya.Z));
-            
+            result.Pop(); // выкидываем последний набор т.к. он полностью копирует предпоследний
             return new GetStampsResult
             {
-                InfinityCycle = false,
-                NoVisit = false,
+                InfinityCycle = infinityCycle,
+                NoVisit = noVisit,
                 VisitCount = result.Count,
-                StampsSets = result.Reverse().Select(set => set.ToArray()).ToArray()
+                StampsSets = result.Reverse().ToHashSet()
             };
         }
+
+        private DepartmentId ProcessDepartment(Department department,
+            Organization organization,
+            StampsCollection currentStamps)
+        {
+            return department.RuleType switch
+            {
+                RuleType.Conditional => ProcessConditional(department.RuleId, organization, currentStamps),
+                RuleType.Unconditional => ProcessUnconditional(department.RuleId, organization, currentStamps),
+                _ => throw new Exception($"Неизвестный тип правила для отдела {department.RuleType}")
+            };
+        }
+        
+        private DepartmentId ProcessConditional(RuleId ruleId, 
+            Organization organization,
+            StampsCollection currentStamps)
+        {
+            ref readonly ConditionalRule rule = ref organization.GetConditionRule(ruleId);
+            var (add, remove, goTo) = currentStamps.Contains(rule.S) 
+                ? (rule.I, rule.J, rule.K) 
+                : (rule.T, rule.R, rule.P);
+            currentStamps.Add(add);
+            currentStamps.Remove(remove);
+            return goTo;
+        }
+        
+        private DepartmentId ProcessUnconditional(RuleId ruleId, 
+            Organization organization,
+            StampsCollection currentStamps)
+        {
+            ref readonly UnconditionalRule rule = ref organization.GetUnconditionalRule(ruleId);
+            currentStamps.Add(rule.I);
+            currentStamps.Remove(rule.J);
+            return rule.K;
+        }
+        
     }
 }

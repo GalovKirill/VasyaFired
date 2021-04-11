@@ -8,6 +8,9 @@ namespace VasyaFiredLib
         public readonly StampId J;
         public readonly DepartmentId K;
 
+        /// <param name="i">Поставить новую печать I если ее еще нет (или она зачеркнута) или не ставить никакую.</param>
+        /// <param name="j">Зачеркнуть существующую печать J если она уже есть и незачеркнута или не зачеркивать никакую.</param>
+        /// <param name="k">Отправить Васю в следующий отдел K.</param>
         public UnconditionalRule(StampId i, StampId j, DepartmentId k)
         {
             I = i;

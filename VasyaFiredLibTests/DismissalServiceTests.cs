@@ -23,7 +23,7 @@ namespace VasyaFiredLibTests
             Assert.AreEqual(expected, actual);
         }
         
-        [TestCaseSource(typeof(GetStampsTestCases), nameof(GetStampsTestCases.TestCasesParallel))]
+        [TestCaseSource(typeof(GetStampsTestCases), nameof(GetStampsTestCases.TestCases))]
         [Timeout(5_000)]
         public void GetStampsFromDifferentThreadsTest(DismissalService service,
             Vasya vasya,
@@ -31,13 +31,11 @@ namespace VasyaFiredLibTests
             Organization organization,
             GetStampsResult expected)
         {
-            ParallelLoopResult loopResult = Parallel.For(0, 16, _ =>
+            Parallel.For(0, 16, _ =>
             {
                 GetStampsResult actual = service.GetStamps(vasya, q, organization);
                 Assert.AreEqual(expected, actual);
             });
-
-            // while (!loopResult.IsCompleted) { }
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -9,7 +10,7 @@ namespace VasyaFiredLib
         public bool InfinityCycle { get; set; }
         public bool NoVisit { get; set; }
         public int VisitCount { get; set; }
-        public StampId[][] StampsSets { get; set; }
+        public ISet<StampsCollection> StampsSets { get; set; }
 
         public bool Equals(GetStampsResult other)
         {
@@ -18,8 +19,8 @@ namespace VasyaFiredLib
 
             return InfinityCycle == other.InfinityCycle &&
                    NoVisit == other.NoVisit &&
-                   VisitCount == other.VisitCount &&
-                   StampsSetsEquals(StampsSets, other.StampsSets);
+                   VisitCount == other.VisitCount && 
+                   StampsSets.SetEquals(other.StampsSets);
         }
 
         public override bool Equals(object obj)
@@ -49,22 +50,6 @@ namespace VasyaFiredLib
 
             return builder.ToString();
         }
-
-        private static bool StampsSetsEquals(StampId[][] stampsSets, StampId[][] otherStampsSets)
-        {
-            if (stampsSets.Length != otherStampsSets.Length)
-                return false;
-            for (int i = 0; i < stampsSets.Length; i++)
-            {
-                var set = stampsSets[i].ToHashSet();
-                var otherSet = otherStampsSets[i].ToHashSet();
-                // set.ExceptWith(otherSet);
-                // otherSet.ExceptWith(set);
-                set.SymmetricExceptWith(otherSet);
-                if (set.Count != 0 )
-                    return false;
-            }
-            return true;
-        }
+        
     }
 }

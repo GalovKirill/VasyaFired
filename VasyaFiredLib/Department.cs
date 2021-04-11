@@ -9,8 +9,7 @@ namespace VasyaFiredLib
 
         public Department(RuleId ruleId, RuleType ruleType)
         {
-            RuleId = ruleId;
-            RuleType = ruleType;
+            (RuleId, RuleType) = (ruleId, ruleType);
         }
 
         public bool Equals(Department other)

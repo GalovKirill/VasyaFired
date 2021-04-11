@@ -14,6 +14,14 @@ namespace VasyaFiredLib
         public readonly StampId R;
         public readonly DepartmentId P;
 
+        
+        /// <param name="s">Если в обходном листе есть незачеркнутая печать S, то</param>
+        /// <param name="i">Поставить новую печать I если ее еще нет (или она зачеркнута) или не ставить никакую.</param>
+        /// <param name="j">Зачеркнуть существующую печать J если она уже есть и незачеркнута или не зачеркивать никакую.</param>
+        /// <param name="k">Отправить Васю в следующий отдел K.</param>
+        /// <param name="t">Иначе поставить новую печать T если ее еще нет (или она зачеркнута) или не ставить никакую.</param>
+        /// <param name="r">Зачеркнуть существующую печать R если она уже есть (или незачеркнута) или не зачеркивать никакую.</param>
+        /// <param name="p">Отправить Васю в следующий отдел P.</param>
         public ConditionalRule(StampId s, StampId i, StampId j, DepartmentId k, StampId t, StampId r, DepartmentId p)
         {
             S = s;

@@ -12,11 +12,31 @@ namespace VasyaFiredLib
         public UnconditionalRule[] UnconditionalRules { get; init; }
         public Department[] Departments { get; init; }
 
-        public ref readonly Department GetDepartment(DepartmentId id) => ref Departments[id.Id];
-        public ref readonly ConditionalRule GetConditionRule(RuleId id) => ref ConditionRules[id.Id];
-        public ref readonly UnconditionalRule GetUnconditionalRule(RuleId id) => ref UnconditionalRules[id.Id];
+        public ref readonly Department GetDepartment(DepartmentId id)
+        {
+            if ((uint) id.Id > (uint) Departments.Length)
+                throw new ArgumentException($"Отдел с {id} не существует");
+            return ref Departments[id.Id];
+        }
 
-        public override bool Equals(object? obj) => obj is Organization other && Equals(other);
+        public ref readonly ConditionalRule GetConditionRule(RuleId id)
+        {
+            if ((uint) id.Id > (uint) ConditionRules.Length)
+                throw new ArgumentException($"Условное парвило с {id} не существует");
+            return ref ConditionRules[id.Id];
+        }
+
+        public ref readonly UnconditionalRule GetUnconditionalRule(RuleId id)
+        {
+            if ((uint) id.Id > (uint) UnconditionalRules.Length)
+                throw new ArgumentException($"Безусловное правило с {id} не существует");
+            return ref UnconditionalRules[id.Id];
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Organization other && Equals(other);
+        }
 
         public bool Equals(Organization other)
         {
@@ -32,8 +52,10 @@ namespace VasyaFiredLib
                    && UnconditionalRules.Zip(other.UnconditionalRules).All(PairEquals);
             
             
-            static bool PairEquals<T>((T first, T second) pair)
-                where T: IEquatable<T> => pair.first.Equals(pair.second);
+            static bool PairEquals<T>((T first, T second) pair) where T: IEquatable<T>
+            {
+                return pair.first.Equals(pair.second);
+            }
         }
 
         public override string ToString()
