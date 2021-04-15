@@ -1,8 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
-using VasyaFiredLib;
+using VasyaFiredLib.Dismissals;
+using VasyaFiredLib.Organization;
 
 namespace VasyaFiredLibTests
 {

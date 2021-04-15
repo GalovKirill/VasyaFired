@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using VasyaFiredLib.Organization;
 
-namespace VasyaFiredLib
+namespace VasyaFiredLib.Dismissals
 {
-    internal class InfinityCycleChecker : IInfinityCycleChecker
+    internal class CycleChecker : ICycleChecker
     {
         private readonly HashSet<DepartmentId> _visited = new();
         private readonly Dictionary<Edge, StampsCollection> _backwardsEdges = new();

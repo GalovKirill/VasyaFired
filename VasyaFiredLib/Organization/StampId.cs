@@ -1,6 +1,6 @@
 using System;
 
-namespace VasyaFiredLib
+namespace VasyaFiredLib.Organization
 {
     public readonly struct StampId : IEquatable<StampId>
     {

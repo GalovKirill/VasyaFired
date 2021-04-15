@@ -1,4 +1,4 @@
-namespace VasyaFiredLib
+namespace VasyaFiredLib.Organization
 {
     public static class OrganizationBuilderExtensions
     {

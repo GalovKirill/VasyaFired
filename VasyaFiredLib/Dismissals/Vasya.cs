@@ -1,4 +1,6 @@
-namespace VasyaFiredLib
+using VasyaFiredLib.Organization;
+
+namespace VasyaFiredLib.Dismissals
 {
     public class Vasya
     {

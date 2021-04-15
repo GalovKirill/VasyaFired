@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using VasyaFiredLib;
+using VasyaFiredLib.Organization;
 
 namespace VasyaFiredLibTests
 {

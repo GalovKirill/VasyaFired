@@ -1,31 +1,30 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VasyaFiredLib.Organization;
 
-namespace VasyaFiredLib
+namespace VasyaFiredLib.Dismissals
 {
     public class DismissalService
     {
-        public GetStampsResult GetStamps(Vasya vasya, DepartmentId q, Organization organization)
+        public GetStampsResult GetStamps(Vasya vasya, DepartmentId q, Organization.Organization organization)
         {
             Stack<StampsCollection> result = new();
-            IInfinityCycleChecker infinityCycleChecker = new InfinityCycleChecker();
+            ICycleChecker cycleChecker = new CycleChecker();
             
-            var infinityCycle = false;
-            var noVisit = true;
-            
-            DepartmentId next = vasya.A;
-            DepartmentId current;
+            bool noVisit = true, infinityCycle;
+            DepartmentId next = vasya.A, current;
             
             result.Push(new StampsCollection());
+            
             do
             {
                 current = next;
                 ref readonly Department department = ref organization.GetDepartment(current);
                 StampsCollection currentStamps = result.Peek();
                 next = ProcessDepartment(department, organization, currentStamps);
-                infinityCycleChecker.AddToVisited(current);
-                infinityCycle = infinityCycleChecker.IsInInfinityCycle(currentStamps, next, current);
+                cycleChecker.AddToVisited(current);
+                infinityCycle = cycleChecker.IsInInfinityCycle(currentStamps, next, current);
                 if (infinityCycle)
                     break;
                 if (q == current)
@@ -47,7 +46,7 @@ namespace VasyaFiredLib
         }
 
         private DepartmentId ProcessDepartment(Department department,
-            Organization organization,
+            Organization.Organization organization,
             StampsCollection currentStamps)
         {
             return department.RuleType switch
@@ -59,7 +58,7 @@ namespace VasyaFiredLib
         }
         
         private DepartmentId ProcessConditional(RuleId ruleId, 
-            Organization organization,
+            Organization.Organization organization,
             StampsCollection currentStamps)
         {
             ref readonly ConditionalRule rule = ref organization.GetConditionRule(ruleId);
@@ -72,7 +71,7 @@ namespace VasyaFiredLib
         }
         
         private DepartmentId ProcessUnconditional(RuleId ruleId, 
-            Organization organization,
+            Organization.Organization organization,
             StampsCollection currentStamps)
         {
             ref readonly UnconditionalRule rule = ref organization.GetUnconditionalRule(ruleId);
